@@ -1,5 +1,6 @@
 package com.zslin.basic.utils;
 
+import com.zslin.basic.repository.SimpleSpecificationBuilder;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.ui.Model;
 
@@ -29,11 +30,11 @@ public class ParamFilterUtil<T> {
                     String [] val_array = parVal.split(PARAM_SPE);
                     String operate = val_array[0]; //比较符号
                     String fieldVal = val_array[1]; //对应值
-                    BaseSearch<T> spec = new BaseSearch<>(new SearchDto(field, operate, fieldVal));
+                    SimpleSpecificationBuilder ssb = new SimpleSpecificationBuilder(field, operate, fieldVal);
                     if(result==null) {
-                        result = Specifications.where(spec);
+                        result = Specifications.where(ssb.generate());
                     } else {
-                        result = result.and(spec);
+                        result = result.and(ssb.generate());
                     }
                     args.put(key, fieldVal);
                 } catch (Exception e) {

@@ -5,12 +5,12 @@ import com.zslin.basic.annotations.Token;
 import com.zslin.basic.exception.SystemException;
 import com.zslin.basic.model.Role;
 import com.zslin.basic.model.User;
+import com.zslin.basic.repository.SimplePageBuilder;
 import com.zslin.basic.service.IRoleService;
 import com.zslin.basic.service.IUserService;
 import com.zslin.basic.service.UserRoleServiceImpl;
 import com.zslin.basic.tools.SecurityUtil;
 import com.zslin.basic.tools.TokenTools;
-import com.zslin.basic.utils.PageableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -46,7 +46,8 @@ public class UserController {
     @AdminAuth(name = "用户管理", orderNum = 1, icon="icon-list", type="1")
     @RequestMapping(value="list", method=RequestMethod.GET)
     public String list(Model model, Integer page, HttpServletRequest request) {
-        Page<User> datas = userService.findAll(PageableUtil.basicPage(page));
+//        Page<User> datas = userService.findAll(PageableUtil.basicPage(page));
+        Page<User> datas = userService.findAll(SimplePageBuilder.generate(page));
         model.addAttribute("datas", datas);
         return "admin/basic/user/list";
     }

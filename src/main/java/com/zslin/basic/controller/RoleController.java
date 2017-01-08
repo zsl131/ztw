@@ -4,12 +4,12 @@ import com.zslin.basic.annotations.AdminAuth;
 import com.zslin.basic.annotations.Token;
 import com.zslin.basic.exception.SystemException;
 import com.zslin.basic.model.Role;
+import com.zslin.basic.repository.SimplePageBuilder;
 import com.zslin.basic.service.IRoleService;
 import com.zslin.basic.service.MenuServiceImpl;
 import com.zslin.basic.service.RoleMenuServiceImpl;
 import com.zslin.basic.tools.PinyinToolkit;
 import com.zslin.basic.tools.TokenTools;
-import com.zslin.basic.utils.PageableUtil;
 import com.zslin.basic.utils.ParamFilterUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,7 +46,8 @@ public class RoleController {
     @AdminAuth(name = "角色管理", orderNum = 1, icon="icon-list", type="1")
     @RequestMapping(value="list", method= RequestMethod.GET)
     public String list(Model model, Integer page, HttpServletRequest request) {
-        Page<Role> datas = roleService.findAll(new ParamFilterUtil<Role>().buildSearch(model, request), PageableUtil.basicPage(page));
+//        Page<Role> datas = roleService.findAll(new ParamFilterUtil<Role>().buildSearch(model, request), PageableUtil.basicPage(page));
+        Page<Role> datas = roleService.findAll(new ParamFilterUtil<Role>().buildSearch(model, request), SimplePageBuilder.generate(page));
         model.addAttribute("datas", datas);
         return "admin/basic/role/list";
     }

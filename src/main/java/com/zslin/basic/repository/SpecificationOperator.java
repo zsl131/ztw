@@ -32,6 +32,10 @@ public class SpecificationOperator {
         this.join = join;
     }
 
+    public SpecificationOperator(String key, String oper, Object value) {
+        this(key, oper, value, "and");
+    }
+
     public String getKey() {
         return key;
     }

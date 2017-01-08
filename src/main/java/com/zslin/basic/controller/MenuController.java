@@ -3,17 +3,16 @@ package com.zslin.basic.controller;
 import com.zslin.basic.annotations.AdminAuth;
 import com.zslin.basic.annotations.Token;
 import com.zslin.basic.model.Menu;
+import com.zslin.basic.repository.SimplePageBuilder;
+import com.zslin.basic.repository.SimpleSortBuilder;
+import com.zslin.basic.repository.SimpleSpecification;
+import com.zslin.basic.repository.SimpleSpecificationBuilder;
 import com.zslin.basic.service.IMenuService;
 import com.zslin.basic.service.MenuServiceImpl;
 import com.zslin.basic.tools.AuthTools;
 import com.zslin.basic.tools.TokenTools;
-import com.zslin.basic.utils.BaseSearch;
-import com.zslin.basic.utils.PageableUtil;
-import com.zslin.basic.utils.SearchDto;
-import com.zslin.basic.utils.SortDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,11 +48,19 @@ public class MenuController {
         String treeJson = menuServiceImpl.queryTreeJson("1");
         Page<Menu> datas ;
         if(pid==null || pid<=0) {
-            BaseSearch<Menu> spec = new BaseSearch<>(new SearchDto("pid", "isnull", ""));
-            datas = menuService.findAll(Specifications.where(spec).and(new BaseSearch<>(new SearchDto("type", "eq", "1"))), PageableUtil.basicPage(page, 15, new SortDto("asc", "orderNum")));
+//            BaseSearch<Menu> spec = new BaseSearch<>(new SearchDto("pid", "isnull", ""));
+//            datas = menuService.findAll(Specifications.where(spec).and(new BaseSearch<>(new SearchDto("type", "eq", "1"))), PageableUtil.basicPage(page, 15, new SortDto("asc", "orderNum")));
+            datas = menuService.findAll(new SimpleSpecificationBuilder()
+                            .add("pid", SimpleSpecification.IS_NULL, "")
+                            .add("type", SimpleSpecification.EQUAL, "1").generate(),
+                    SimplePageBuilder.generate(page, 15, SimpleSortBuilder.generateSort("orderNum")));
         } else {
-            BaseSearch<Menu> spec = new BaseSearch<>(new SearchDto("pid", "eq", pid));
-            datas = menuService.findAll(Specifications.where(spec).and(new BaseSearch<>(new SearchDto("type", "eq", "1"))), PageableUtil.basicPage(page, 15, new SortDto("asc", "orderNum")));
+//            BaseSearch<Menu> spec = new BaseSearch<>(new SearchDto("pid", "eq", pid));
+//            datas = menuService.findAll(Specifications.where(spec).and(new BaseSearch<>(new SearchDto("type", "eq", "1"))), PageableUtil.basicPage(page, 15, new SortDto("asc", "orderNum")));
+            datas = menuService.findAll(new SimpleSpecificationBuilder<>()
+                    .add("pid", SimpleSpecification.EQUAL, pid)
+                    .add("type", SimpleSpecification.EQUAL, "1").generate(),
+                    SimplePageBuilder.generate(page, 15, SimpleSortBuilder.generateSort("orderNum")));
         }
         model.addAttribute("treeJson", treeJson);
         model.addAttribute("datas", datas);
